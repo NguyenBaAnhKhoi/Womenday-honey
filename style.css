@@ -918,6 +918,7 @@ body {
   color: #fff;
   background: linear-gradient(135deg, #ffffff 0%, #ff8cb6 60%, #f5d27a 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 0 8px rgba(255, 111, 159, 0.6));
 }
