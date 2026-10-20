@@ -478,18 +478,28 @@ class LiXunHeartEngine {
       if (isH === 1) {
         this.normX[i] = (bx / d) * 2.2;
         this.normY[i] = (by / d) * 2.2;
-        this.size[i] = 1.0 + Math.random() * 1.5;
+        this.size[i] = 1.3 + Math.random() * 1.6;
       } else {
         const force = 1 / Math.pow(d, 0.52);
         this.normX[i] = (bx / d) * force * 13.5;
         this.normY[i] = (by / d) * force * 13.5;
-        this.size[i] = (i < 700) ? (1.5 + Math.random() * 1.5) : (1.1 + Math.random() * 1.2);
+        this.size[i] = (i < 700) ? (1.8 + Math.random() * 1.6) : (1.3 + Math.random() * 1.3);
       }
     }
   }
 
   resize() {
+    if (!this.wrapper || !this.canvas) {
+      this.canvas = document.getElementById("heartCanvasFinal");
+      this.wrapper = document.getElementById("lixunHeartBox");
+    }
     if (!this.wrapper || !this.canvas) return;
+
+    if (!this.ctx) {
+      this.ctx = this.canvas.getContext("2d", { alpha: true });
+    }
+    if (!this.ctx) return;
+
     const rect = this.wrapper.getBoundingClientRect();
     this.dpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
@@ -502,8 +512,8 @@ class LiXunHeartEngine {
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
 
-    this.ctx.resetTransform?.();
-    this.ctx.scale(this.dpr, this.dpr);
+    // Dùng setTransform chuẩn W3C tương thích 100% mọi trình duyệt WebKit / iOS Safari
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
     this.centerX = this.width / 2;
     this.centerY = this.height / 2 - 4;
@@ -529,11 +539,18 @@ class LiXunHeartEngine {
   }
 
   start() {
-    if (this.isRunning) return;
+    if (!this.canvas || !this.wrapper || !this.ctx) {
+      this.canvas = document.getElementById("heartCanvasFinal");
+      this.wrapper = document.getElementById("lixunHeartBox");
+      if (this.canvas) this.ctx = this.canvas.getContext("2d", { alpha: true });
+    }
+    if (!this.canvas || !this.ctx) return;
     this.isRunning = true;
     this.resize();
     this.lastTime = performance.now();
-    this.render();
+    if (!this.rafId) {
+      this.render();
+    }
   }
 
   stop() {
@@ -700,6 +717,10 @@ function showScene(index) {
     requestAnimationFrame(() => {
       lixunHeart.resize();
     });
+    setTimeout(() => {
+      lixunHeart.resize();
+      if (!lixunHeart.isRunning) lixunHeart.start();
+    }, 500);
     burstPetals(window.innerWidth / 2, window.innerHeight * 0.35, 24, true);
   } else {
     lixunHeart.stop();
