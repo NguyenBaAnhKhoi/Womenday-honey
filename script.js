@@ -492,8 +492,12 @@ class LiXunHeartEngine {
     if (!this.wrapper || !this.canvas) return;
     const rect = this.wrapper.getBoundingClientRect();
     this.dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-    this.width = Math.max(rect.width, 280);
-    this.height = Math.max(rect.height, 220);
+
+    // Tính toán kích thước chuẩn mobile (không bao giờ bị width/height = 0)
+    const w = rect.width || this.wrapper.clientWidth || window.innerWidth || 340;
+    const h = rect.height || this.wrapper.clientHeight || 210;
+    this.width = Math.max(Math.min(w, 400), 280);
+    this.height = Math.max(h, 200);
 
     this.canvas.width = Math.floor(this.width * this.dpr);
     this.canvas.height = Math.floor(this.height * this.dpr);
@@ -527,6 +531,7 @@ class LiXunHeartEngine {
   start() {
     if (this.isRunning) return;
     this.isRunning = true;
+    this.resize();
     this.lastTime = performance.now();
     this.render();
   }
@@ -690,7 +695,11 @@ function showScene(index) {
 
   // Nếu đến cảnh cuối Grand Finale: Kích hoạt Trái Tim Lý Tuân & bắn chùm tim lãng mạn
   if (index === 2) {
+    lixunHeart.resize();
     lixunHeart.start();
+    requestAnimationFrame(() => {
+      lixunHeart.resize();
+    });
     burstPetals(window.innerWidth / 2, window.innerHeight * 0.35, 24, true);
   } else {
     lixunHeart.stop();

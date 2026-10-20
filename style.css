@@ -424,7 +424,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: calc(48px + var(--safe-top)) 16px calc(36px + var(--safe-bottom)) 16px;
+  padding: calc(16px + var(--safe-top)) 16px calc(24px + var(--safe-bottom)) 16px;
   opacity: 0;
   visibility: hidden;
   pointer-events: auto;
@@ -434,12 +434,13 @@ body {
 .scene-scroll-inner {
   width: 100%;
   max-width: 440px;
-  margin: auto 0;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 14px;
-  padding-bottom: 24px;
+  gap: 12px;
+  padding-top: 4px;
+  padding-bottom: 28px;
 }
 
 /* ========================================================
@@ -839,8 +840,9 @@ body {
   position: relative;
   width: 100%;
   max-width: 360px;
-  height: 240px;
-  margin: 0 auto 6px;
+  height: 210px;
+  min-height: 190px;
+  margin: 0 auto 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -850,6 +852,8 @@ body {
   -webkit-user-select: none;
   touch-action: manipulation;
   transform: translateZ(0);
+  flex-shrink: 0;
+  z-index: 5;
 }
 
 .heart-lixun-canvas {
