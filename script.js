@@ -1,5 +1,5 @@
 /* ==========================================================================
-   GỬI VỢ YÊU HỒNG LIÊN - 20/10 MOBILE STORY & HIGH PERFORMANCE (70+ FPS)
+   GỬI VỢ YÊU HỒNG LIÊN - 20/10 MOBILE STORY & ROMANTIC LUXURY EXPERIENCE
    ========================================================================== */
 
 /* ==========================================================================
@@ -8,19 +8,20 @@
 const WIFE_INFO = {
   name: "Hồng Liên",
   title: "Bông Hoa Đẹp Nhất Của Đời Anh 🌸",
-  flowerColor: "#ff4071",   // Đóa sen hồng rực rỡ
-  glowColor: "#ff75a0",
-  secondaryColor: "#ffd166" // Nhị hoa vàng nắng
+  flowerColor: "#ff6f9f",   // Hồng pastel ngọt ngào
+  glowColor: "#ff9ec7",
+  secondaryColor: "#f5d27a" // Vàng champagne ấm áp
 };
 
 /* ==========================================================================
-   ⚡ 1. TỐI ƯU HÓA HIỆU NĂNG: PRE-RENDERED SPRITES & OBJECT POOL (70+ FPS)
+   ⚡ 1. HIỆU ỨNG CÁNH HOA & TIM RƠI NHẸ NHÀNG (CALM & ELEGANT AMBIENCE)
+   Giảm mật độ hiệu ứng để người xem tập trung trọn vẹn vào lời chúc & ảnh
    ========================================================================== */
-const PETAL_COLORS = ["#ff75a0", "#ff4071", "#ff9ec7", "#ffd166", "#ffffff", "#c77dff"];
-const SPRITE_SIZE = 42;
+const PETAL_COLORS = ["#ff6f9f", "#ff4071", "#ffb8d2", "#f5d27a", "#fff7fb", "#d8c5d8"];
+const SPRITE_SIZE = 40;
 const spriteCache = {};
 
-// Khởi tạo trước texture hạt cánh hoa và tim phát sáng trong bộ nhớ (Offscreen Canvas)
+// Khởi tạo texture hạt cánh hoa và tim phát sáng trong bộ nhớ (Offscreen Canvas)
 function initSprites() {
   PETAL_COLORS.forEach((color) => {
     // 1. Sprite cánh hoa sen
@@ -31,20 +32,19 @@ function initSprites() {
     const cx = SPRITE_SIZE / 2;
     const cy = SPRITE_SIZE / 2;
 
-    // Quầng sáng mềm
     const grad = pctx.createRadialGradient(cx, cy, 2, cx, cy, SPRITE_SIZE / 2);
     grad.addColorStop(0, color);
-    grad.addColorStop(0.45, color);
+    grad.addColorStop(0.5, color);
     grad.addColorStop(1, "transparent");
     pctx.fillStyle = grad;
     pctx.beginPath();
     pctx.arc(cx, cy, SPRITE_SIZE / 2, 0, Math.PI * 2);
     pctx.fill();
 
-    // Thân cánh hoa
+    // Cánh hoa mềm mại
     pctx.fillStyle = color;
     pctx.beginPath();
-    pctx.ellipse(cx, cy, SPRITE_SIZE * 0.16, SPRITE_SIZE * 0.38, 0, 0, Math.PI * 2);
+    pctx.ellipse(cx, cy, SPRITE_SIZE * 0.15, SPRITE_SIZE * 0.35, 0, 0, Math.PI * 2);
     pctx.fill();
 
     spriteCache[color] = pCanvas;
@@ -54,11 +54,11 @@ function initSprites() {
     hCanvas.width = SPRITE_SIZE;
     hCanvas.height = SPRITE_SIZE;
     const hctx = hCanvas.getContext("2d");
-    hctx.font = `${Math.floor(SPRITE_SIZE * 0.6)}px serif`;
+    hctx.font = `${Math.floor(SPRITE_SIZE * 0.55)}px serif`;
     hctx.textAlign = "center";
     hctx.textBaseline = "middle";
     hctx.shadowColor = color;
-    hctx.shadowBlur = 8;
+    hctx.shadowBlur = 6;
     hctx.fillStyle = color;
     hctx.fillText("♥", cx, cy);
 
@@ -67,7 +67,7 @@ function initSprites() {
 }
 initSprites();
 
-// Canvas & Object Pool
+// Canvas & Object Pool (Giới hạn 24 hạt nhẹ nhàng, rơi chậm rãi)
 const canvas = document.getElementById("petals");
 const ctx = canvas.getContext("2d", { alpha: true });
 let W = 0, H = 0, dpr = 1;
@@ -84,7 +84,7 @@ function resize() {
 window.addEventListener("resize", resize, { passive: true });
 resize();
 
-const MAX_PARTICLES = 110;
+const MAX_PARTICLES = 24; // Giảm mật độ hiệu ứng theo đúng đề xuất 3 & 5
 const particlePool = new Array(MAX_PARTICLES);
 for (let i = 0; i < MAX_PARTICLES; i++) {
   particlePool[i] = {
@@ -96,7 +96,7 @@ for (let i = 0; i < MAX_PARTICLES; i++) {
     rot: 0, vr: 0,
     sway: 0,
     color: PETAL_COLORS[0],
-    alpha: 0.9
+    alpha: 0.85
   };
 }
 
@@ -105,81 +105,57 @@ function spawnParticle(x = Math.random() * W, y = -20, isBurst = false, forceHea
     const p = particlePool[i];
     if (!p.active) {
       p.active = true;
-      p.isHeart = forceHeart || Math.random() < 0.25;
+      p.isHeart = forceHeart || Math.random() < 0.28;
       p.x = x;
       p.y = y;
       const angle = Math.random() * Math.PI * 2;
-      const speed = isBurst ? 2.5 + Math.random() * 6 : 0;
-      p.vx = isBurst ? Math.cos(angle) * speed : (Math.random() - 0.5) * 0.65;
-      p.vy = isBurst ? Math.sin(angle) * speed : 0.7 + Math.random() * 1.3;
-      p.size = p.isHeart ? 10 + Math.random() * 7 : 7 + Math.random() * 8;
+      const speed = isBurst ? 1.8 + Math.random() * 4.5 : 0;
+      p.vx = isBurst ? Math.cos(angle) * speed : (Math.random() - 0.5) * 0.45;
+      p.vy = isBurst ? Math.sin(angle) * speed : 0.45 + Math.random() * 0.75; // Rơi chậm, êm dịu
+      p.size = p.isHeart ? 9 + Math.random() * 6 : 7 + Math.random() * 7;
       p.rot = Math.random() * 6.28;
-      p.vr = (Math.random() - 0.5) * 0.05;
+      p.vr = (Math.random() - 0.5) * 0.035;
       p.sway = Math.random() * 6.28;
       p.color = PETAL_COLORS[(Math.random() * PETAL_COLORS.length) | 0];
-      p.alpha = 0.9;
+      p.alpha = 0.85;
       break;
     }
   }
 }
 
-function burstPetals(x, y, count = 28, heartsOnly = false) {
-  const actual = Math.min(count, 45);
+function burstPetals(x, y, count = 18, heartsOnly = false) {
+  const actual = Math.min(count, 28);
   for (let i = 0; i < actual; i++) {
     spawnParticle(x, y, true, heartsOnly);
   }
 }
 
-// Đo FPS thời gian thực
-let frameCount = 0;
-let lastFpsTime = performance.now();
-const fpsValEl = document.getElementById("fpsVal");
-
-function updateFps(now) {
-  frameCount++;
-  if (now - lastFpsTime >= 500) {
-    const currentFps = Math.round((frameCount * 1000) / (now - lastFpsTime));
-    if (fpsValEl) {
-      fpsValEl.textContent = currentFps;
-      const dot = document.querySelector(".fps-dot");
-      if (dot) {
-        dot.style.background = currentFps >= 60 ? "#06d6a0" : (currentFps >= 45 ? "#ffd166" : "#ff4071");
-      }
-    }
-    frameCount = 0;
-    lastFpsTime = now;
-  }
-}
-
-// Vòng lặp render tối ưu
+// Vòng lặp render nhẹ nhàng
 let isTabActive = true;
 document.addEventListener("visibilitychange", () => {
   isTabActive = !document.hidden;
 });
 
 let spawnTimer = 0;
-function animateCanvas(now) {
+function animateCanvas() {
   if (isTabActive) {
-    updateFps(now);
     ctx.clearRect(0, 0, W, H);
     ctx.globalCompositeOperation = "lighter";
 
     spawnTimer++;
-    if (spawnTimer % 8 === 0) {
+    if (spawnTimer % 28 === 0) { // Giãn cách rơi hạt để màn hình thông thoáng
       spawnParticle(Math.random() * W, -20, false);
     }
-
-    const slow = gsap.globalTimeline.timeScale();
 
     for (let i = 0; i < MAX_PARTICLES; i++) {
       const p = particlePool[i];
       if (!p.active) continue;
 
-      p.sway += 0.025 * slow;
-      p.x += (p.vx + Math.sin(p.sway) * 0.6) * slow;
-      p.y += p.vy * slow;
+      p.sway += 0.018;
+      p.x += p.vx + Math.sin(p.sway) * 0.4;
+      p.y += p.vy;
       p.vx *= 0.985;
-      p.rot += p.vr * slow;
+      p.rot += p.vr;
 
       const key = p.isHeart ? `heart_${p.color}` : p.color;
       const sprite = spriteCache[key] || spriteCache[p.color];
@@ -193,7 +169,7 @@ function animateCanvas(now) {
         ctx.restore();
       }
 
-      if (p.y > H + 30 || p.x < -40 || p.x > W + 40) {
+      if (p.y > H + 30 || p.x < -30 || p.x > W + 30) {
         p.active = false;
       }
     }
@@ -248,43 +224,61 @@ class AudioController {
     else this.play();
   }
 
+  // Fallback Web Audio Lofi Synth nếu trình duyệt chặn file audio
   startLofiSynth() {
-    if (this.synthTimer) return;
+    if (this.audioCtx) return;
     try {
-      const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
-      if (!this.audioCtx) this.audioCtx = new AudioCtxClass();
-      if (this.audioCtx.state === "suspended") this.audioCtx.resume();
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      this.audioCtx = new AudioContextClass();
+    } catch (_) {
+      return;
+    }
 
-      const notes = [261.63, 329.63, 392.00, 493.88, 440.00, 523.25, 587.33];
-      let step = 0;
+    const chords = [
+      [261.63, 329.63, 392.0, 493.88], // Cmaj7
+      [220.0, 261.63, 329.63, 392.0],  // Am7
+      [174.61, 220.0, 261.63, 329.63], // Fmaj7
+      [196.0, 246.94, 293.66, 349.23]  // G7
+    ];
+    let chordIdx = 0;
 
-      const playChime = () => {
-        if (!this.isPlaying) return;
-        const now = this.audioCtx.currentTime;
+    const playNextChord = () => {
+      if (!this.isPlaying || !this.audioCtx) return;
+      if (this.audioCtx.state === "suspended") {
+        this.audioCtx.resume();
+      }
+
+      const chord = chords[chordIdx % chords.length];
+      chordIdx++;
+      const now = this.audioCtx.currentTime;
+
+      chord.forEach((freq) => {
         const osc = this.audioCtx.createOscillator();
         const gain = this.audioCtx.createGain();
+        const filter = this.audioCtx.createBiquadFilter();
 
         osc.type = "sine";
-        osc.frequency.setValueAtTime(notes[step % notes.length], now);
-        step = (step + 1 + Math.floor(Math.random() * 2)) % notes.length;
+        osc.frequency.setValueAtTime(freq, now);
 
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.045, now + 0.12);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.6);
+        filter.type = "lowpass";
+        filter.frequency.setValueAtTime(550, now);
 
-        osc.connect(gain);
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.linearRampToValueAtTime(0.022, now + 0.8);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 3.8);
+
+        osc.connect(filter);
+        filter.connect(gain);
         gain.connect(this.audioCtx.destination);
 
         osc.start(now);
-        osc.stop(now + 1.65);
+        osc.stop(now + 4.0);
+      });
 
-        this.synthTimer = setTimeout(playChime, 650 + Math.random() * 350);
-      };
+      this.synthTimer = setTimeout(playNextChord, 3800);
+    };
 
-      playChime();
-    } catch {
-      // Bỏ qua nếu trình duyệt chặn hoàn toàn
-    }
+    playNextChord();
   }
 
   stopLofiSynth() {
@@ -292,162 +286,102 @@ class AudioController {
       clearTimeout(this.synthTimer);
       this.synthTimer = null;
     }
+    if (this.audioCtx) {
+      this.audioCtx.close().catch(() => {});
+      this.audioCtx = null;
+    }
   }
 }
 const soundCtrl = new AudioController();
 
 /* ==========================================================================
-   🎬 3. HIỆU ỨNG SLOW MOTION & CHẠM MÀN HÌNH
+   🌸 3. DỰNG ĐÓA HOA SEN HÉ NỞ NGHỆ THUẬT (COMPACT & SWAYING)
+   Thu nhỏ 25-30% theo đề xuất 1.1, cánh hoa hé nở nhẹ nhàng, đung đưa
    ========================================================================== */
-const slowBadge = document.getElementById("slowBadge");
-let slowMoTimeout = null;
-
-function slowMo(scale = 0.35, hold = 3) {
-  if (slowMoTimeout) clearTimeout(slowMoTimeout);
-
-  slowBadge.classList.add("active");
-  gsap.to(gsap.globalTimeline, {
-    timeScale: scale,
-    duration: 0.45,
-    ease: "power2.out"
-  });
-
-  slowMoTimeout = setTimeout(() => {
-    gsap.to(gsap.globalTimeline, {
-      timeScale: 1.0,
-      duration: 1.2,
-      ease: "power2.inOut",
-      onComplete: () => {
-        slowBadge.classList.remove("active");
-      }
-    });
-  }, hold * 1000);
-}
-
-// Chạm bất kỳ đâu = bắn chùm hạt + bay tim + mini slow-mo
-window.addEventListener("pointerdown", (e) => {
-  if (e.target.closest("button") || currentScene < 0) return;
-
-  createTouchEffect(e.clientX, e.clientY);
-  burstPetals(e.clientX, e.clientY, 20);
-  slowMo(0.52, 0.7);
-}, { passive: true });
-
-function createTouchEffect(x, y) {
-  // 1. Sóng nước loang tỏa
-  const ripple = document.createElement("div");
-  ripple.className = "touch-ripple";
-  ripple.style.left = `${x}px`;
-  ripple.style.top = `${y}px`;
-  ripple.style.width = "36px";
-  ripple.style.height = "36px";
-  document.body.appendChild(ripple);
-  setTimeout(() => ripple.remove(), 650);
-
-  // 2. Trái tim bay lên
-  const heart = document.createElement("div");
-  heart.className = "tap-heart";
-  heart.style.left = `${x}px`;
-  heart.style.top = `${y}px`;
-  heart.textContent = ["💖", "🌸", "💕", "✨"][Math.floor(Math.random() * 4)];
-  document.body.appendChild(heart);
-  setTimeout(() => heart.remove(), 900);
-}
-
-/* ==========================================================================
-   🌸 4. DỰNG HOA SEN SVG (HỒNG LIÊN NỞ CHẬM)
-   ========================================================================== */
-const NS = "http://www.w3.org/2000/svg";
-const el = (tag, attrs = {}) => {
-  const e = document.createElementNS(NS, tag);
-  for (const k in attrs) e.setAttribute(k, attrs[k]);
-  return e;
-};
-
-function renderLotusFlower(targetEl, color = WIFE_INFO.flowerColor, petals = 12) {
+function renderLotusFlower(targetEl, color = WIFE_INFO.flowerColor, count = 12) {
+  if (!targetEl) return;
   targetEl.innerHTML = "";
-  const svg = el("svg", {
-    viewBox: "-100 -100 200 200",
-    role: "img",
-    "aria-label": "Đóa Hồng Liên phát sáng"
-  });
 
-  // Vẽ 2 lớp cánh hoa sen
-  for (let l = 0; l < 2; l++) {
-    const k = 1 - l * 0.3;
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "-75 -75 150 150");
+
+  const el = (type, attrs) => {
+    const node = document.createElementNS(ns, type);
+    Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+    return node;
+  };
+
+  // Vòng cánh hoa 3 tầng tinh tế
+  const layers = [
+    { petals: count, scale: 0.95, color: "#ff6f9f" },
+    { petals: count - 2, scale: 0.75, color: "#ff8cb6" },
+    { petals: count - 4, scale: 0.55, color: "#fff0f5" }
+  ];
+
+  layers.forEach((layer, lIdx) => {
+    const { petals, scale: k, color: pColor } = layer;
     for (let i = 0; i < petals; i++) {
       const p = el("ellipse", {
         cx: 0,
-        cy: -42 * k,
-        rx: 16 * k,
-        ry: 46 * k,
-        fill: color,
-        "fill-opacity": 0.62 + l * 0.28,
+        cy: -32 * k,
+        rx: 12 * k,
+        ry: 36 * k,
+        fill: pColor,
+        "fill-opacity": 0.65 + lIdx * 0.22,
         class: "lotus-petal"
       });
-      p.dataset.angle = (360 / petals) * i + l * (180 / petals);
+      p.dataset.angle = (360 / petals) * i + lIdx * (180 / petals);
       svg.appendChild(p);
     }
-  }
+  });
 
-  // Nhuỵ vàng
+  // Nhuỵ vàng champagne
   svg.appendChild(el("circle", {
-    r: 13,
+    r: 10,
     fill: WIFE_INFO.secondaryColor,
     class: "lotus-core"
   }));
 
   targetEl.appendChild(svg);
 
-  // GSAP Animation nở hoa
+  // GSAP Animation nở hoa mềm mại
   const petalEls = targetEl.querySelectorAll(".lotus-petal");
   const coreEl = targetEl.querySelector(".lotus-core");
 
   gsap.set(petalEls, {
     scale: 0,
-    rotation: (k, t) => +t.dataset.angle - 65,
+    rotation: (k, t) => +t.dataset.angle - 50,
     svgOrigin: "0 0"
   });
   gsap.set(coreEl, { scale: 0, svgOrigin: "0 0" });
 
   const tl = gsap.timeline();
-  tl.to(coreEl, { scale: 1, duration: 1.0, ease: "back.out(2.4)" }, 0.1)
+  tl.to(coreEl, { scale: 1, duration: 1.0, ease: "back.out(2)" }, 0.1)
     .to(petalEls, {
       scale: 1,
       rotation: (k, t) => +t.dataset.angle,
-      duration: 3.2,
-      ease: "expo.out",
-      stagger: 0.055
+      duration: 2.8,
+      ease: "power2.out",
+      stagger: 0.045
     }, 0.25);
-
-  gsap.to(svg, {
-    rotation: 360,
-    duration: 65,
-    ease: "none",
-    repeat: -1
-  });
 }
 
-// Dựng hoa cho cảnh 1 và cảnh 5
+// Khởi tạo hoa cho Cảnh 1 và Cảnh 3
 renderLotusFlower(document.getElementById("flowerBox1"));
-renderLotusFlower(document.getElementById("flowerBoxFinal"), WIFE_INFO.flowerColor, 14);
+renderLotusFlower(document.getElementById("flowerBoxFinal"), WIFE_INFO.flowerColor, 12);
 
 /* ==========================================================================
-   📖 5. BỘ ĐIỀU PHỐI STORY CÂU CHUYỆN (5 CẢNH MOBILE)
+   📖 4. BỘ ĐIỀU PHỐI STORY CÂU CHUYỆN (3 CHẶNG TRẢI NGHIỆM)
+   Tối ưu cuộn trên Safari iPhone: không bị che khuất nội dung
    ========================================================================== */
 const scenes = [
-  document.getElementById("scene1"),
-  document.getElementById("scene2"),
-  document.getElementById("scene3"),
-  document.getElementById("scene4"),
-  document.getElementById("scene5")
+  document.getElementById("scene1"), // Màn hình 2: Lời chúc & Chân dung
+  document.getElementById("scene2"), // Màn hình 3: 3 Trái tim bí mật
+  document.getElementById("scene3")  // Màn hình 4: Grand Finale & Lời hứa
 ];
 const progressBars = document.querySelectorAll(".progress-bar");
-const nextBtn = document.getElementById("nextBtn");
-const hintText = document.getElementById("hintText");
-
 let currentScene = -1;
-let autoAdvanceTimer = null;
 
 function updateProgress(index) {
   progressBars.forEach((bar, idx) => {
@@ -463,17 +397,15 @@ function updateProgress(index) {
 
 function showScene(index) {
   if (index < 0 || index >= scenes.length) return;
-  clearTimeout(autoAdvanceTimer);
 
   const prev = scenes[currentScene];
   const next = scenes[index];
 
-  if (prev) {
+  if (prev && prev !== next) {
     prev.setAttribute("aria-hidden", "true");
     gsap.to(prev, {
       opacity: 0,
-      y: -15,
-      duration: 0.65,
+      duration: 0.45,
       ease: "power2.inOut",
       onComplete: () => {
         prev.style.visibility = "hidden";
@@ -483,78 +415,112 @@ function showScene(index) {
 
   next.style.visibility = "visible";
   next.setAttribute("aria-hidden", "false");
+  next.scrollTop = 0; // Đưa cuộn về đầu trang ngay lập tức trên iPhone
+
   gsap.fromTo(next, 
-    { opacity: 0, y: 20 },
-    { opacity: 1, y: 0, duration: 0.75, ease: "power2.out" }
+    { opacity: 0, y: 15 },
+    { opacity: 1, y: 0, duration: 0.65, ease: "power2.out" }
   );
 
   updateProgress(index);
   currentScene = index;
 
-  // Ẩn nút "Tiếp tục" ở cảnh tương tác câu hỏi (scene 3) và cảnh kết (scene 4)
-  if (index === 3 || index === 4) {
-    nextBtn.hidden = true;
-  } else {
-    nextBtn.hidden = false;
-  }
-  if (hintText) {
-    hintText.hidden = false;
-    gsap.set(hintText, { opacity: 0.75 });
-    clearTimeout(autoAdvanceTimerHint);
-    autoAdvanceTimerHint = setTimeout(() => {
-      gsap.to(hintText, { opacity: 0, duration: 0.8, onComplete: () => { hintText.hidden = true; } });
-    }, 3500);
-  }
-
-  // Cảnh Grand Finale (Scene 4)
-  if (index === 4) {
-    slowMo(0.28, 4.0);
-    burstPetals(window.innerWidth / 2, window.innerHeight * 0.35, 40, true);
-  } else if (index < 3) {
-    // Tự động chuyển cảnh sau 7 giây nếu người dùng không bấm
-    autoAdvanceTimer = setTimeout(() => {
-      showScene(index + 1);
-    }, 7000);
+  // Nếu đến cảnh cuối Grand Finale, bắn chùm tim lãng mạn
+  if (index === 2) {
+    burstPetals(window.innerWidth / 2, window.innerHeight * 0.35, 24, true);
   }
 }
 
-let autoAdvanceTimerHint = null;
-
-// Bấm nút "Tiếp tục"
-nextBtn.addEventListener("click", (e) => {
+// Nút chuyển tiếp trong Cảnh 1 sang Cảnh 2
+document.getElementById("nextToScene2")?.addEventListener("click", (e) => {
   e.stopPropagation();
-  if (currentScene < scenes.length - 1) {
-    showScene(currentScene + 1);
-  }
+  burstPetals(window.innerWidth / 2, window.innerHeight * 0.6, 15, true);
+  showScene(1);
 });
 
-// Xử lý các lựa chọn trong Cảnh 4
-document.querySelectorAll(".choice-btn").forEach((btn) => {
+// Nút chuyển tiếp trong Cảnh 2 sang Cảnh 3
+document.getElementById("nextToScene3")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  burstPetals(window.innerWidth / 2, window.innerHeight * 0.6, 18, true);
+  showScene(2);
+});
+
+/* ==========================================================================
+   💌 5. TƯƠNG TÁC 3 TRÁI TIM BÍ MẬT (REFERENCE IMAGE 2 & 3)
+   ========================================================================== */
+const SECRETS_DATA = {
+  1: {
+    title: "✨ Nụ Cười Của Em",
+    body: "Mỗi khi nhìn thấy nụ cười của em, mọi mệt mỏi và âu lo trong anh đều tan biến. Nụ cười ấy là ánh nắng ấm áp nhất sưởi ấm tâm hồn anh mỗi ngày, là điều quý giá mà anh luôn muốn nâng niu, gìn giữ suốt cả cuộc đời."
+  },
+  2: {
+    title: "🏡 Sự Dịu Dàng & Hy Sinh",
+    body: "Cảm ơn em vì những ân cần, từng bữa cơm gia đình ấm cúng và sự hy sinh thầm lặng của em dành cho tổ ấm nhỏ của chúng mình. Có em kề bên, anh luôn cảm nhận được sự bình yên và trọn vẹn nhất."
+  },
+  3: {
+    title: "💍 Lời Hứa Mãi Mãi",
+    body: "Dù cuộc đời phía trước có bao thăng trầm, anh hứa sẽ luôn là điểm tựa vững chãi nhất, cùng em chia sẻ mọi vui buồn và yêu thương em nhiều hơn mỗi ngày, không chỉ riêng ngày 20/10 mà là suốt cả cuộc đời."
+  }
+};
+
+const openedSecrets = new Set();
+const secretModal = document.getElementById("secretModal");
+const secretTitle = document.getElementById("secretTitle");
+const secretBody = document.getElementById("secretBody");
+const secretStatus = document.getElementById("secretStatus");
+const closeSecretBtn = document.getElementById("closeSecretBtn");
+const secretOverlay = document.getElementById("secretOverlay");
+
+function openSecret(id) {
+  const data = SECRETS_DATA[id];
+  if (!data) return;
+
+  secretTitle.textContent = data.title;
+  secretBody.textContent = data.body;
+  secretModal.classList.add("open");
+  secretModal.setAttribute("aria-hidden", "false");
+
+  // Đánh dấu đã mở
+  openedSecrets.add(id);
+  const checkEl = document.getElementById(`check${id}`);
+  if (checkEl) checkEl.classList.add("revealed");
+
+  // Bắn vài hạt tim ăn mừng
+  burstPetals(window.innerWidth / 2, window.innerHeight / 2, 16, true);
+
+  // Cập nhật trạng thái
+  if (secretStatus) {
+    if (openedSecrets.size === 1) {
+      secretStatus.innerHTML = "✨ Đã khám phá 1/3 bí mật. Chạm vào trái tim tiếp theo nhé 💕";
+    } else if (openedSecrets.size === 2) {
+      secretStatus.innerHTML = "✨ Đã khám phá 2/3 bí mật. Còn 1 điều bất ngờ nữa thôi nè!";
+    } else {
+      secretStatus.innerHTML = "💖 Em đã mở trọn vẹn tất cả bí mật rồi! Hãy bấm nút bên dưới nhé ✨";
+    }
+  }
+}
+
+function closeSecret() {
+  secretModal.classList.remove("open");
+  secretModal.setAttribute("aria-hidden", "true");
+}
+
+document.querySelectorAll(".heart-balloon").forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.stopPropagation();
-    burstPetals(window.innerWidth / 2, window.innerHeight / 2, 40, true);
-    slowMo(0.35, 1.5);
-    setTimeout(() => {
-      showScene(4); // Chuyển sang Grand Finale
-    }, 900);
+    const id = btn.getAttribute("data-secret");
+    openSecret(id);
   });
 });
 
-// Nút "Gửi ngàn nụ hôn cho Chồng"
-document.getElementById("kissBtn")?.addEventListener("click", (e) => {
+closeSecretBtn?.addEventListener("click", (e) => {
   e.stopPropagation();
-  burstPetals(window.innerWidth / 2, window.innerHeight * 0.45, 50, true);
-  slowMo(0.32, 2.0);
-
-  const btn = document.getElementById("kissBtn");
-  btn.style.transform = "scale(0.92)";
-  setTimeout(() => (btn.style.transform = "scale(1)"), 200);
+  closeSecret();
 });
 
-// Nút "Xem lại hành trình"
-document.getElementById("replayBtn")?.addEventListener("click", (e) => {
+secretOverlay?.addEventListener("click", (e) => {
   e.stopPropagation();
-  showScene(0);
+  closeSecret();
 });
 
 /* ==========================================================================
@@ -563,27 +529,16 @@ document.getElementById("replayBtn")?.addEventListener("click", (e) => {
 function handleStartGift(e) {
   if (e) e.stopPropagation();
 
-  // Ngay lập tức làm biến mất dòng chữ "Chạm vào màn hình để bắt đầu hành trình ✨"
-  const tapGuide = document.querySelector(".tap-guide");
-  if (tapGuide) {
-    tapGuide.style.transition = "opacity 0.25s ease, transform 0.25s ease";
-    tapGuide.style.opacity = "0";
-    tapGuide.style.transform = "translateY(8px)";
-    setTimeout(() => {
-      if (tapGuide) tapGuide.remove();
-    }, 250);
-  }
-
   soundCtrl.play();
-  burstPetals(window.innerWidth / 2, window.innerHeight / 2, 35, true);
+  burstPetals(window.innerWidth / 2, window.innerHeight / 2, 25, true);
 
   const startScreen = document.getElementById("start");
   if (startScreen) {
     startScreen.classList.add("gone");
     setTimeout(() => {
       startScreen.remove();
-      showScene(0);
-    }, 650);
+      showScene(0); // Chuyển sang Màn hình 2 (Lời chúc 20/10)
+    }, 600);
   } else {
     showScene(0);
   }
@@ -592,7 +547,67 @@ function handleStartGift(e) {
 document.getElementById("openBtn")?.addEventListener("click", handleStartGift);
 
 /* ==========================================================================
-   🚫 7. TỰ ĐỘNG GỠ BỎ HUY HIỆU "POWERED BY NETLIFY" TRÊN DOM
+   💋 7. HAI NÚT TƯƠNG TÁC TỔNG KẾT (SECTION 1.4)
+   ========================================================================== */
+// Nút chính: Gửi ngàn nụ hôn cho anh
+const kissBtn = document.getElementById("kissBtn");
+kissBtn?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  burstPetals(window.innerWidth / 2, window.innerHeight * 0.45, 30, true);
+
+  // Rung haptic nếu thiết bị hỗ trợ
+  if (navigator.vibrate) {
+    navigator.vibrate([40, 60, 40]);
+  }
+
+  const kissText = kissBtn.querySelector(".kiss-text");
+  if (kissText) {
+    const originalText = kissText.textContent;
+    kissText.textContent = "Đã gửi ngàn nụ hôn yêu thương! 💕";
+    setTimeout(() => {
+      kissText.textContent = originalText;
+    }, 2500);
+  }
+});
+
+// Nút phụ: Xem lại hành trình yêu thương
+document.getElementById("replayBtn")?.addEventListener("click", (e) => {
+  e.stopPropagation();
+  showScene(0); // Quay về Cảnh 1
+});
+
+/* ==========================================================================
+   💖 8. HIỆU ỨNG CHẠM TAY THẢ TIM & SÓNG NƯỚC (TAP RIPPLE)
+   ========================================================================== */
+window.addEventListener("pointerdown", (e) => {
+  // Bỏ qua nếu chạm vào button hoặc interactive element
+  if (e.target.closest("button") || e.target.closest(".secret-modal") || e.target.closest("#soundToggle")) {
+    return;
+  }
+
+  const x = e.clientX;
+  const y = e.clientY;
+
+  // Hiệu ứng sóng nước
+  const ripple = document.createElement("div");
+  ripple.className = "touch-ripple";
+  ripple.style.left = `${x}px`;
+  ripple.style.top = `${y}px`;
+  document.body.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 650);
+
+  // Trái tim bay lên nhẹ nhàng
+  const heart = document.createElement("div");
+  heart.className = "tap-heart";
+  heart.style.left = `${x}px`;
+  heart.style.top = `${y}px`;
+  heart.textContent = ["💖", "🌸", "✨", "💕"][(Math.random() * 4) | 0];
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 900);
+}, { passive: true });
+
+/* ==========================================================================
+   🚫 9. TỰ ĐỘNG GỠ BỎ HUY HIỆU "POWERED BY NETLIFY" TRÊN DOM
    ========================================================================== */
 function purgeNetlifyBadge() {
   const selectors = [
@@ -612,10 +627,7 @@ function purgeNetlifyBadge() {
   });
 }
 
-// Thực thi ngay khi chạy script
 purgeNetlifyBadge();
-
-// Lắng nghe khi Netlify Edge script chèn iframe vào DOM
 if (typeof MutationObserver !== "undefined") {
   const netlifyBadgeObserver = new MutationObserver(() => {
     purgeNetlifyBadge();
@@ -625,5 +637,3 @@ if (typeof MutationObserver !== "undefined") {
     subtree: true
   });
 }
-
-

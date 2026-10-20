@@ -48,18 +48,16 @@
   </style>
 </head>
 <body class="mobile-app">
-  <!-- Cực quang nền Neon Aurora (GPU Shader mượt mà 70+ FPS) -->
+  <!-- Cực quang nền Neon Aurora (GPU Shader mượt mà) -->
   <div id="aurora" aria-hidden="true">
     <i></i><i></i><i></i>
   </div>
 
-  <!-- Canvas hiệu ứng mưa cánh hoa sen & tim rơi -->
+  <!-- Canvas hiệu ứng mưa cánh hoa sen & tim rơi nhẹ nhàng -->
   <canvas id="petals" aria-hidden="true"></canvas>
 
-  <!-- Thanh tiến trình Story trên đỉnh màn hình Mobile -->
+  <!-- Thanh tiến trình Story trên đỉnh màn hình Mobile (3 chặng hành trình) -->
   <div id="storyProgress" class="story-progress" aria-hidden="true">
-    <div class="progress-bar"><div class="fill"></div></div>
-    <div class="progress-bar"><div class="fill"></div></div>
     <div class="progress-bar"><div class="fill"></div></div>
     <div class="progress-bar"><div class="fill"></div></div>
     <div class="progress-bar"><div class="fill"></div></div>
@@ -73,31 +71,19 @@
     </span>
   </button>
 
-  <!-- Badge chỉ báo Slow Motion -->
-  <div id="slowBadge" class="slow-badge" aria-hidden="true">
-    <span class="slow-dot"></span>
-    <span class="slow-text">SLOW MOTION</span>
-  </div>
-
-  <!-- Badge FPS thời gian thực -->
-  <div id="fpsCounter" class="fps-badge" title="Tốc độ khung hình">
-    <span class="fps-dot"></span>
-    <span id="fpsVal">70</span> FPS
-  </div>
-
   <!-- ========================================================
-       1. MÀN HÌNH MỞ QUÀ BAN ĐẦU (INTRO / START SCREEN)
+       1. MÀN HÌNH MỞ QUÀ BAN ĐẦU (INTRO: MỞ ĐẦU BẤT NGỜ)
        ======================================================== -->
   <section id="start" class="start-screen" role="region" aria-label="Màn hình mở quà">
     <div class="start-content">
-      <!-- Búp hoa sen hồng phát sáng lung linh -->
+      <!-- Búp hoa sen hồng phát sáng lung linh nhỏ nhắn, chuyển động nhẹ nhàng -->
       <div class="bud-wrap">
         <span class="pulse-ring"></span>
         <span class="pulse-ring delay-1"></span>
         <svg class="bud-svg" viewBox="0 0 140 160" aria-hidden="true">
           <defs>
             <linearGradient id="budGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stop-color="#ff4d88" />
+              <stop offset="0%" stop-color="#ff6f9f" />
               <stop offset="65%" stop-color="#ff8cb6" />
               <stop offset="100%" stop-color="#fff0f5" />
             </linearGradient>
@@ -106,21 +92,21 @@
               <stop offset="100%" stop-color="#028060" />
             </linearGradient>
           </defs>
-          <path d="M70 150 C70 120 68 100 70 85" stroke="url(#stemGrad)" stroke-width="4.5" stroke-linecap="round" fill="none" />
-          <path d="M70 120 Q44 116 40 94 Q66 98 70 120Z" fill="#06d6a0" opacity="0.85" />
-          <path d="M70 88 C40 80 34 46 70 14 C106 46 100 80 70 88Z" fill="url(#budGrad)" stroke="#ffffff" stroke-width="1.5" />
-          <path d="M70 88 C50 82 46 54 70 30 C94 54 90 82 70 88Z" fill="#ff70a6" opacity="0.75" />
+          <path d="M70 150 C70 120 68 100 70 85" stroke="url(#stemGrad)" stroke-width="4" stroke-linecap="round" fill="none" />
+          <path d="M70 120 Q46 116 42 96 Q66 98 70 120Z" fill="#06d6a0" opacity="0.8" />
+          <path d="M70 88 C44 80 38 48 70 18 C102 48 96 80 70 88Z" fill="url(#budGrad)" stroke="#ffffff" stroke-width="1.2" />
+          <path d="M70 88 C52 82 48 56 70 34 C92 56 88 82 70 88Z" fill="#ff70a6" opacity="0.75" />
         </svg>
       </div>
 
-      <span class="tag">20/10 · Happy Vietnamese Women's Day</span>
-      <h1 class="start-title">Gửi Vợ Yêu<br /><span class="highlight-name">HỒNG LIÊN</span> 💖</h1>
+      <span class="tag">💌 DÀNH TẶNG VỢ YÊU</span>
+      <h1 class="start-title">Anh có một món quà nhỏ<br />dành cho em...</h1>
       <p class="start-sub">Bông hoa đẹp nhất và rực rỡ nhất của đời anh</p>
 
       <button id="openBtn" class="primary-btn btn-shine">
-        <span class="btn-text">Chạm để mở quà tặng Vợ 🎁</span>
+        <span class="btn-text">Mở món quà của anh ❤️</span>
       </button>
-      <span class="tap-guide">Chạm vào màn hình để bắt đầu hành trình ✨</span>
+      <span class="tap-guide">Chạm để mở đóa hoa và khám phá yêu thương ✨</span>
     </div>
   </section>
 
@@ -129,119 +115,158 @@
        ======================================================== -->
   <main id="stage" role="main" aria-live="polite">
 
-    <!-- Cảnh 1: Lời mở đầu & Đóa hoa sen hé nở -->
+    <!-- Cảnh 1 (Màn hình 2): Lời chúc 20/10 & Ảnh chân dung người yêu -->
     <section class="scene" id="scene1" data-scene="0">
-      <div class="flower-container" id="flowerBox1"></div>
-      
-      <div class="dialog-card">
-        <span class="dialog-tag">20 Tháng 10 🌹</span>
-        <h2>Hôm nay là ngày của Em...</h2>
-        <p class="dialog-text">Ngày tôn vinh những người phụ nữ tuyệt vời nhất trên đời.</p>
-        <p class="dialog-text highlight">Và với anh, vợ chính là đóa hoa xinh đẹp, dịu dàng và rạng ngời nhất trong cuộc đời anh! ✨</p>
+      <div class="scene-scroll-inner">
+        <!-- Đóa sen hé nở thanh lịch nhỏ gọn -->
+        <div class="flower-container flower-compact" id="flowerBox1"></div>
+
+        <div class="dialog-card">
+          <span class="dialog-tag">20/10 · HAPPY VIETNAMESE WOMEN'S DAY</span>
+          <h2 class="scene-title">Chúc Mừng 20/10</h2>
+          <div class="name-hero">Vợ Yêu Hồng Liên 💖</div>
+          <p class="scene-subtitle">Bông hoa đẹp nhất của đời anh</p>
+
+          <!-- Ảnh chân dung người yêu với viền gradient pastel & champagne cao cấp -->
+          <div class="photo-wrapper-modern">
+            <div class="photo-frame-modern">
+              <img src="Image/1.jpg" alt="Vợ yêu Hồng Liên" class="wife-photo" onerror="this.style.display='none'" />
+            </div>
+            <span class="photo-floating-petal p1">🌸</span>
+            <span class="photo-floating-petal p2">✨</span>
+          </div>
+
+          <div class="letter-body">
+            <p>Hôm nay là ngày đặc biệt của em — người phụ nữ tuyệt vời nhất trong cuộc đời anh.</p>
+            <p class="highlight-quote">Cảm ơn em vì đã đến bên đời anh, vì những bữa cơm gia đình ấm áp, vì sự hy sinh và chăm chút cho tổ ấm nhỏ của chúng mình. Có em kề bên, mỗi ngày trôi qua với anh đều là bình yên và hạnh phúc trọn vẹn nhất. 🏡💕</p>
+          </div>
+
+          <!-- Nút chuyển tiếp an toàn nằm trong luồng thẻ, không bị che -->
+          <div class="card-action">
+            <button class="nav-next-btn" id="nextToScene2">
+              <span>Có điều anh muốn nói với em</span> <span class="arrow">→</span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Cảnh 2: Lời cảm ơn chân thành & Bức ảnh kỷ niệm -->
+    <!-- Cảnh 2 (Màn hình 3): Những điều anh muốn nói (3 Trái tim tương tác bí mật) -->
     <section class="scene" id="scene2" data-scene="1">
-      <div class="photo-container">
-        <div class="photo-frame">
-          <img src="Image/1.jpg" alt="Vợ yêu Hồng Liên" class="wife-photo" onerror="this.style.display='none'" />
-          <div class="photo-glow"></div>
-        </div>
-        <div class="beating-heart-mini">💖</div>
-      </div>
+      <div class="scene-scroll-inner">
+        <div class="dialog-card interactive-card">
+          <span class="dialog-tag">NHỮNG ĐIỀU ANH MUỐN NÓI 💌</span>
+          <h2 class="scene-title">Điều anh yêu nhất ở em là...</h2>
+          <p class="interactive-hint">Chạm vào từng trái tim để khám phá bí mật ngọt ngào anh dành riêng cho em ✨</p>
 
-      <div class="dialog-card">
-        <span class="dialog-tag">Lời cảm ơn từ Chồng 💌</span>
-        <h2>Cảm ơn Vợ thật nhiều!</h2>
-        <p class="dialog-text">Cảm ơn em vì đã đến bên đời anh, vì những bữa cơm ngon ấm áp, vì sự hy sinh và chăm chút cho tổ ấm nhỏ của chúng mình.</p>
-        <p class="dialog-text highlight">Có em kề bên, mỗi ngày trôi qua với anh đều là bình yên và hạnh phúc trọn vẹn nhất. 🏡💕</p>
+          <!-- 3 Bong bóng trái tim tương tác lơ lửng -->
+          <div class="heart-balloons-grid">
+            <button class="heart-balloon" data-secret="1" aria-label="Khám phá nụ cười của em">
+              <div class="balloon-body color-pink">
+                <span class="balloon-icon">💖</span>
+                <span class="balloon-text">Nụ cười</span>
+              </div>
+              <span class="balloon-string"></span>
+              <span class="secret-check" id="check1">✓</span>
+            </button>
+
+            <button class="heart-balloon" data-secret="2" aria-label="Khám phá sự dịu dàng của em">
+              <div class="balloon-body color-rose">
+                <span class="balloon-icon">❤️</span>
+                <span class="balloon-text">Dịu dàng</span>
+              </div>
+              <span class="balloon-string"></span>
+              <span class="secret-check" id="check2">✓</span>
+            </button>
+
+            <button class="heart-balloon" data-secret="3" aria-label="Khám phá lời hứa bên em">
+              <div class="balloon-body color-purple">
+                <span class="balloon-icon">💜</span>
+                <span class="balloon-text">Bên em</span>
+              </div>
+              <span class="balloon-string"></span>
+              <span class="secret-check" id="check3">✓</span>
+            </button>
+          </div>
+
+          <!-- Trạng thái gợi ý -->
+          <div class="secret-status" id="secretStatus">
+            <span class="sparkle">✨</span> Chạm vào một trái tim để đọc tâm sự của anh nhé
+          </div>
+
+          <!-- Bức ảnh kỷ niệm nhỏ nhắn ấm áp -->
+          <div class="sub-photo-row">
+            <div class="sub-photo-item">
+              <img src="Image/2.jpg" alt="Khoảnh khắc ngọt ngào" onerror="this.style.display='none'" />
+            </div>
+            <div class="sub-photo-item">
+              <img src="Image/3.jpg" alt="Nụ cười của em" onerror="this.style.display='none'" />
+            </div>
+          </div>
+
+          <!-- Nút chuyển tiếp sang Grand Finale -->
+          <div class="card-action">
+            <button class="nav-next-btn pulse-ready" id="nextToScene3">
+              <span>Khám phá món quà cuối cùng</span> <span class="arrow">→</span>
+            </button>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Cảnh 3: Lời hứa chở che & Bức ảnh rạng ngời -->
+    <!-- Cảnh 3 (Màn hình 4): GRAND FINALE - Kết thúc bất ngờ & Lời hứa vĩnh cửu -->
     <section class="scene" id="scene3" data-scene="2">
-      <div class="photo-container">
-        <div class="photo-frame">
-          <img src="Image/2.jpg" alt="Khoảnh khắc hạnh phúc" class="wife-photo" onerror="this.style.display='none'" />
-          <div class="photo-glow"></div>
-        </div>
-      </div>
+      <div class="scene-scroll-inner">
+        <!-- Đóa Hồng Liên nở rộ nghệ thuật thanh lịch -->
+        <div class="flower-container flower-compact multi-glow" id="flowerBoxFinal"></div>
 
-      <div class="dialog-card">
-        <span class="dialog-tag">Lời hứa của Anh 💍</span>
-        <h2>Anh luôn ở đây bên Em</h2>
-        <p class="dialog-text">Anh có thể không phải người đàn ông hoàn hảo nhất, nhưng anh hứa sẽ luôn là người yêu thương, che chở và là điểm tựa vững chắc nhất của em.</p>
-        <p class="dialog-text highlight">Chỉ cần em luôn mỉm cười hạnh phúc, mọi khó khăn bão giông bên ngoài cứ để anh lo! 🌈✨</p>
-      </div>
-    </section>
+        <div class="final-card">
+          <span class="final-badge">HAPPY VIETNAMESE WOMEN'S DAY · 20/10</span>
+          <h2 class="final-heading">Cảm ơn em vì đã xuất hiện<br />trong cuộc đời anh!</h2>
+          <p class="final-quote">"Dù hôm nay là 20/10 hay bất kỳ ngày nào khác, anh vẫn muốn em biết rằng em luôn là người đặc biệt nhất đối với anh." ❤️</p>
 
-    <!-- Cảnh 4: Câu hỏi tương tác ngọt ngào -->
-    <section class="scene" id="scene4" data-scene="3">
-      <div class="photo-container">
-        <div class="photo-frame">
-          <img src="Image/3.jpg" alt="Nụ cười của vợ" class="wife-photo" onerror="this.style.display='none'" />
-          <div class="photo-glow"></div>
-        </div>
-      </div>
+          <!-- Ảnh kỷ niệm đẹp nhất với viền champagne & hồng pastel -->
+          <div class="final-photo-wrap-modern">
+            <img src="Image/4.jpg" alt="Hồng Liên - Bông hoa đẹp nhất đời anh" class="final-photo" onerror="this.style.display='none'" />
+            <div class="photo-ambient-glow"></div>
+          </div>
 
-      <div class="dialog-card text-center">
-        <span class="dialog-tag">Bật mí nhỏ nè 🤫</span>
-        <h2>Vợ có biết điều này không?</h2>
-        <p class="dialog-text">Trên thế giới này, điều làm anh tự hào và may mắn nhất chính là được làm người bạn đời của vợ đó!</p>
-        
-        <p class="question-title">Vợ có thương anh như anh thương vợ không? 🥰</p>
-        <div class="question-actions">
-          <button class="choice-btn choice-yes" data-choice="yes">
-            <span>Dạ yêu chồng nhiều lắm! 💕</span>
-          </button>
-          <button class="choice-btn choice-super" data-choice="super">
-            <span>Yêu chồng nhất trần đời! 💖</span>
-          </button>
-        </div>
-      </div>
-    </section>
+          <div class="final-message">
+            <p>Chúc vợ yêu của anh luôn ngập tràn niềm vui, nụ cười rạng ngời và luôn cảm thấy được yêu thương trọn vẹn nhất!</p>
+            <p class="highlight-line">Mãi mãi yêu em – Bông hoa đẹp nhất của đời anh! 🌹</p>
+          </div>
 
-    <!-- Cảnh 5: GRAND FINALE - Đóa Hồng Liên nở rộ & Thiệp Chúc Mừng Toàn Bích -->
-    <section class="scene" id="scene5" data-scene="4">
-      <div class="flower-container multi-glow" id="flowerBoxFinal"></div>
-
-      <div class="final-card">
-        <span class="final-badge">HAPPY VIETNAMESE WOMEN'S DAY</span>
-        <h2 class="final-title">Chúc Mừng 20/10<br /><span class="name-display">Vợ Yêu Hồng Liên</span> 🌸</h2>
-        <p class="final-subtitle">Bông hoa đẹp nhất của đời anh</p>
-        
-        <div class="final-photo-wrap">
-          <img src="Image/4.jpg" alt="Hồng Liên - Bông hoa đẹp nhất" class="final-photo" onerror="this.style.display='none'" />
-        </div>
-
-        <div class="final-message">
-          <p>Chúc vợ yêu của anh ngày 20/10 luôn ngập tràn niềm vui, nụ cười rạng ngời và luôn cảm thấy được yêu thương trọn vẹn nhất!</p>
-          <p class="highlight-line">Mãi mãi yêu em – người phụ nữ tuyệt vời nhất của anh! ❤️</p>
-        </div>
-
-        <div class="final-buttons">
-          <button id="kissBtn" class="kiss-btn">
-            <span>💋 Gửi ngàn nụ hôn cho Chồng</span>
-          </button>
-          <button id="replayBtn" class="replay-btn">
-            <span>🔄 Xem lại hành trình yêu thương</span>
-          </button>
+          <!-- 2 Nút tương tác theo đúng chuẩn thiết kế cao cấp -->
+          <div class="final-buttons-row">
+            <button id="kissBtn" class="btn-kiss-main">
+              <span class="kiss-icon">💋</span>
+              <span class="kiss-text">Gửi ngàn nụ hôn cho anh</span>
+            </button>
+            <button id="replayBtn" class="btn-replay-sub">
+              <span class="replay-icon">💌</span>
+              <span>Xem lại hành trình yêu thương</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
 
   </main>
 
-  <!-- Nút chuyển cảnh tiếp theo (Dành cho Mobile một tay) -->
-  <button id="nextBtn" class="next-btn" hidden aria-label="Sang cảnh kế tiếp">
-    <span>Tiếp tục</span> <span class="next-arrow">→</span>
-  </button>
-
-  <!-- Dòng nhắc tương tác chạm -->
-  <p id="hintText" class="hint-text" hidden>
-    <span class="sparkle">✨</span> Chạm vào màn hình để thả tim & bắn cánh hoa slow motion 🌸
-  </p>
+  <!-- ========================================================
+       MODAL GLASSMORPHISM HIỂN THỊ BÍ MẬT 3 TRÁI TIM
+       ======================================================== -->
+  <div id="secretModal" class="secret-modal" aria-hidden="true">
+    <div class="secret-overlay" id="secretOverlay"></div>
+    <div class="secret-dialog" role="dialog" aria-modal="true">
+      <div class="secret-glow-heart">💖</div>
+      <h3 id="secretTitle" class="secret-heading">Nụ Cười Của Em</h3>
+      <p id="secretBody" class="secret-content">Nội dung bí mật...</p>
+      <button id="closeSecretBtn" class="primary-btn btn-pill-sm">
+        <span>Em cảm ơn anh yêu 💕</span>
+      </button>
+    </div>
+  </div>
 
   <!-- Nhạc nền Lofi (với Web Audio synthesizer fallback) -->
   <audio id="bgm" src="assets/music.mp3" preload="auto" loop></audio>
