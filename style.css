@@ -930,3 +930,28 @@ body {
     padding: 16px 18px;
   }
 }
+
+/* ==========================================================================
+   🚫 ẨN TOÀN BỘ HUY HIỆU & POPUP NETLIFY (POWERED BY NETLIFY & NETLIFY DRAWER)
+   ========================================================================== */
+#nl-badge-frame,
+.nl-badge-frame,
+iframe[id*="nl-badge"],
+iframe[src*="netlify"],
+#netlify-drawer-root,
+[data-netlify-drawer],
+div[class*="netlify-badge"],
+[data-netlify-badge],
+.netlify-feedback-badge {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  z-index: -9999 !important;
+}
+

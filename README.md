@@ -84,6 +84,13 @@ Dự án đã được cấu hình sẵn sàng 100% cho Netlify với file cấu
 2. Đăng nhập Netlify, chọn **Add new site** $\rightarrow$ **Import an existing project** $\rightarrow$ chọn repository **Womenday-honey**.
 3. Netlify sẽ tự động nhận diện cấu hình `netlify.toml` (`publish = "."`) và triển khai ngay lập tức.
 
+### 💡 Tắt huy hiệu "Powered by Netlify" trên trang web:
+- **Tự động bằng Code:** Dự án đã tích hợp sẵn cơ chế chặn CSS & gỡ bỏ DOM tự động trong `index.html`, `style.css` và `script.js`.
+- **Tắt vĩnh viễn trên Netlify Dashboard:**
+  1. Vào [app.netlify.com](https://app.netlify.com) $\rightarrow$ chọn Site dự án.
+  2. Chọn **Site configuration** (hoặc **Project configuration**) $\rightarrow$ **General**.
+  3. Tìm mục **Powered by Netlify badge** $\rightarrow$ gạt sang **Off** $\rightarrow$ **Save**.
+
 ---
 
 ## 🛠️ Cấu Trúc Thư Mục Mã Nguồn

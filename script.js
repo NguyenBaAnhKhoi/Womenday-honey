@@ -591,3 +591,39 @@ function handleStartGift(e) {
 
 document.getElementById("openBtn")?.addEventListener("click", handleStartGift);
 
+/* ==========================================================================
+   🚫 7. TỰ ĐỘNG GỠ BỎ HUY HIỆU "POWERED BY NETLIFY" TRÊN DOM
+   ========================================================================== */
+function purgeNetlifyBadge() {
+  const selectors = [
+    "#nl-badge-frame",
+    ".nl-badge-frame",
+    "iframe[id*='nl-badge']",
+    "iframe[src*='netlify']",
+    "#netlify-drawer-root",
+    "[data-netlify-drawer]",
+    "[data-netlify-badge]",
+    ".netlify-feedback-badge"
+  ];
+  selectors.forEach((sel) => {
+    try {
+      document.querySelectorAll(sel).forEach((el) => el.remove());
+    } catch (_) {}
+  });
+}
+
+// Thực thi ngay khi chạy script
+purgeNetlifyBadge();
+
+// Lắng nghe khi Netlify Edge script chèn iframe vào DOM
+if (typeof MutationObserver !== "undefined") {
+  const netlifyBadgeObserver = new MutationObserver(() => {
+    purgeNetlifyBadge();
+  });
+  netlifyBadgeObserver.observe(document.documentElement, {
+    childList: true,
+    subtree: true
+  });
+}
+
+
