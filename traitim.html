@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trái Tim Lý Tuân</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="heartCanvas"></canvas>
+
+    <script>
+        const canvas = document.getElementById('heartCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const CENTER_X = canvas.width / 2;
+        const CENTER_Y = canvas.height / 2;
+        const ENLARGE = Math.min(canvas.width, canvas.height) / 45;
+        const HEART_COLOR = "#ff7171";
+
+        function heartFunction(t, shrinkRatio = ENLARGE) {
+            let x = 16 * Math.pow(Math.sin(t), 3);
+            let y = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+            return {
+                x: x * shrinkRatio + CENTER_X,
+                y: y * shrinkRatio + CENTER_Y
+            };
+        }
+
+        function scatterInside(x, y, beta = 0.15) {
+            let ratioX = -beta * Math.log(Math.random());
+            let ratioY = -beta * Math.log(Math.random());
+            return {
+                x: x - ratioX * (x - CENTER_X),
+                y: y - ratioY * (y - CENTER_Y)
+            };
+        }
+
+        function shrink(x, y, ratio) {
+            let force = -1 / Math.pow(Math.pow(x - CENTER_X, 2) + Math.pow(y - CENTER_Y, 2), 0.6);
+            return {
+                x: x - ratio * force * (x - CENTER_X),
+                y: y - ratio * force * (y - CENTER_Y)
+            };
+        }
+
+        function curve(p) {
+            return 2 * (2 * Math.sin(4 * p)) / (2 * Math.PI);
+        }
+
+        function calcPosition(x, y, ratio) {
+            let force = 1 / Math.pow(Math.pow(x - CENTER_X, 2) + Math.pow(y - CENTER_Y, 2), 0.520);
+            let dx = ratio * force * (x - CENTER_X) + (Math.random() * 2 - 1);
+            let dy = ratio * force * (y - CENTER_Y) + (Math.random() * 2 - 1);
+            return { x: x - dx, y: y - dy };
+        }
+
+        // Khởi tạo tập hợp điểm
+        const points = [];
+        const edgeDiffusion = [];
+        const centerDiffusion = [];
+
+        for (let i = 0; i < 2000; i++) {
+            let t = Math.random() * 2 * Math.PI;
+            let p = heartFunction(t);
+            points.push(p);
+            for (let j = 0; j < 3; j++) {
+                edgeDiffusion.push(scatterInside(p.x, p.y, 0.05));
+            }
+        }
+
+        for (let i = 0; i < 4000; i++) {
+            let p = points[Math.floor(Math.random() * points.length)];
+            centerDiffusion.push(scatterInside(p.x, p.y, 0.17));
+        }
+
+        let frame = 0;
+        function render() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.85)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = HEART_COLOR;
+
+            let p = (frame / 20) * Math.PI;
+            let ratio = 10 * curve(p);
+            let haloRadius = 4 + 6 * (1 + curve(p));
+            let haloNumber = Math.floor(2000 + 3000 * Math.pow(Math.abs(curve(p)), 2));
+
+            // Vẽ hào quang ngoài (Halo)
+            for (let i = 0; i < haloNumber; i++) {
+                let t = Math.random() * 2 * Math.PI;
+                let pos = heartFunction(t, ENLARGE * 1.05);
+                pos = shrink(pos.x, pos.y, haloRadius);
+                pos.x += (Math.random() * 28 - 14);
+                pos.y += (Math.random() * 28 - 14);
+                let size = Math.random() < 0.7 ? 1.5 : 2.5;
+                ctx.fillRect(pos.x, pos.y, size, size);
+            }
+
+            // Vẽ khung trái tim chính
+            points.forEach(pt => {
+                let pos = calcPosition(pt.x, pt.y, ratio);
+                let size = Math.random() * 2 + 1;
+                ctx.fillRect(pos.x, pos.y, size, size);
+            });
+
+            // Vẽ hạt khuếch tán viền
+            edgeDiffusion.forEach(pt => {
+                let pos = calcPosition(pt.x, pt.y, ratio);
+                ctx.fillRect(pos.x, pos.y, 1.5, 1.5);
+            });
+
+            // Vẽ hạt khuếch tán tâm
+            centerDiffusion.forEach(pt => {
+                let pos = calcPosition(pt.x, pt.y, ratio);
+                ctx.fillRect(pos.x, pos.y, 1.5, 1.5);
+            });
+
+            frame++;
+            setTimeout(() => requestAnimationFrame(render), 80);
+        }
+
+        render();
+    </script>
+</body>
+
+</html>

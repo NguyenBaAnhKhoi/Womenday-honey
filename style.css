@@ -832,6 +832,118 @@ body {
 }
 
 /* ========================================================
+   TRÁI TIM LÝ TUÂN BỪNG SÁNG & ĐẬP RỘN RÀNG (LI XUN HEART)
+   Tối ưu GPU Hardware Acceleration, Không giật lag & 75 FPS
+   ======================================================== */
+.lixun-heart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  height: 240px;
+  margin: 0 auto 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transform: translateZ(0);
+}
+
+.heart-lixun-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: auto;
+  transform: translateZ(0);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.lixun-heart-wrapper:active .heart-lixun-canvas {
+  transform: scale(0.96) translateZ(0);
+}
+
+.heart-ambient-halo {
+  position: absolute;
+  width: 260px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 64, 113, 0.32) 0%, rgba(255, 111, 159, 0.18) 40%, rgba(245, 210, 122, 0.08) 65%, transparent 80%);
+  pointer-events: none;
+  z-index: 1;
+  transform: translateZ(0);
+  animation: heartAmbientPulse 3.2s ease-in-out infinite alternate;
+}
+
+@keyframes heartAmbientPulse {
+  0% { transform: scale(0.92) translateZ(0); opacity: 0.6; }
+  100% { transform: scale(1.12) translateZ(0); opacity: 0.95; }
+}
+
+.heart-center-badge {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  pointer-events: none;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(24, 10, 43, 0.85);
+  border: 1px solid rgba(255, 111, 159, 0.45);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45), 0 0 16px rgba(255, 111, 159, 0.35);
+  transform: translateY(14px) translateZ(0);
+  animation: badgeBreathe 3.6s ease-in-out infinite alternate;
+}
+
+@keyframes badgeBreathe {
+  0% { transform: translateY(14px) scale(0.98) translateZ(0); }
+  100% { transform: translateY(14px) scale(1.03) translateZ(0); }
+}
+
+.heart-center-title {
+  font-family: var(--font-script);
+  font-size: clamp(24px, 6.2vw, 30px);
+  font-weight: 400;
+  line-height: 1.1;
+  color: #fff;
+  background: linear-gradient(135deg, #ffffff 0%, #ff8cb6 60%, #f5d27a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 8px rgba(255, 111, 159, 0.6));
+}
+
+.heart-center-sub {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--accent-gold);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.heart-touch-hint {
+  position: absolute;
+  bottom: 0;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--text-sub);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+  animation: hintPulse 2.8s ease-in-out infinite alternate;
+}
+
+@keyframes hintPulse {
+  0% { opacity: 0.5; transform: translateY(0); }
+  100% { opacity: 0.95; transform: translateY(-2px); }
+}
+
+/* ========================================================
    CẢNH 3: GRAND FINALE (KẾT THÚC BẤT NGỜ & LỜI HỨA)
    ======================================================== */
 .final-card {
@@ -1125,6 +1237,13 @@ body {
   .dialog-card, .final-card {
     padding: 16px 14px;
     border-radius: 20px;
+  }
+  .lixun-heart-wrapper {
+    height: 200px;
+    margin-bottom: 2px;
+  }
+  .heart-center-title {
+    font-size: 22px;
   }
   .photo-wrapper-modern {
     width: 140px;
