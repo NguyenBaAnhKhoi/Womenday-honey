@@ -1,0 +1,22 @@
+{
+  "entries": [
+    {
+      "path": ".agent/BA"
+    },
+    {
+      "path": ".agent/BE"
+    },
+    {
+      "path": ".agent/FE"
+    },
+    {
+      "path": ".agent/QA"
+    },
+    {
+      "path": ".agent/QC"
+    },
+    {
+      "path": ".agent/TESTER"
+    }
+  ]
+}
